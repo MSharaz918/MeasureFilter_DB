@@ -185,6 +185,8 @@ def process():
         # Log form validation errors
         if request.method == 'POST':
             logging.error(f"Form validation failed: {form.errors}")
+            logging.error(f"Form data received: {request.form}")
+            logging.error(f"Measures data: {form.measures.data}")
             for field, errors in form.errors.items():
                 for error in errors:
                     flash(f'{field}: {error}', 'error')
