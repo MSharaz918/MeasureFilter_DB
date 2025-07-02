@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - MIPS Measure Filter{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="h3 mb-1">Welcome back, {{ current_user.username }}!</h1>
+                    <p class="text-muted">Manage your MIPS measure processing jobs</p>
+                </div>
+                <a href="{{ url_for('main.upload') }}" class="btn btn-primary">
+                    <i data-feather="upload" class="me-2"></i>
+                    Upload New File
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title text-muted mb-1">Total Jobs</h6>
+                            <h3 class="mb-0">{{ recent_jobs|length }}</h3>
+                        </div>
+                        <i data-feather="file-text" class="text-primary" width="32" height="32"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title text-muted mb-1">Completed</h6>
+                            <h3 class="mb-0">{{ recent_jobs|selectattr('status', 'equalto', 'completed')|list|length }}</h3>
+                        </div>
+                        <i data-feather="check-circle" class="text-success" width="32" height="32"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title text-muted mb-1">Processing</h6>
+                            <h3 class="mb-0">{{ recent_jobs|selectattr('status', 'equalto', 'processing')|list|length }}</h3>
+                        </div>
+                        <i data-feather="clock" class="text-warning" width="32" height="32"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Jobs -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i data-feather="list" class="me-2"></i>
+                        Recent Processing Jobs
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if recent_jobs %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>File Name</th>
+                                        <th>Measures</th>
+                                        <th>Status</th>
+                                        <th>Created</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for job in recent_jobs %}
+                                    <tr>
+                                        <td>
+                                            <i data-feather="file" class="me-2"></i>
+                                            {{ job.filename }}
+                                        </td>
+                                        <td>
+                                            {% set measures = job.measures|fromjson %}
+                                            <span class="badge bg-secondary me-1">{{ measures|length }} measures</span>
+                                            {% for measure in measures[:3] %}
+                                                <small class="text-muted">{{ measure }}</small>{% if not loop.last %}, {% endif %}
+                                            {% endfor %}
+                                            {% if measures|length > 3 %}
+                                                <small class="text-muted">...</small>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if job.status == 'completed' %}
+                                                <span class="badge bg-success">
+                                                    <i data-feather="check" width="12" height="12" class="me-1"></i>
+                                                    Completed
+                                                </span>
+                                            {% elif job.status == 'processing' %}
+                                                <span class="badge bg-warning">
+                                                    <i data-feather="clock" width="12" height="12" class="me-1"></i>
+                                                    Processing
+                                                </span>
+                                            {% elif job.status == 'error' %}
+                                                <span class="badge bg-danger">
+                                                    <i data-feather="x" width="12" height="12" class="me-1"></i>
+                                                    Error
+                                                </span>
+                                            {% else %}
+                                                <span class="badge bg-secondary">
+                                                    <i data-feather="circle" width="12" height="12" class="me-1"></i>
+                                                    {{ job.status|title }}
+                                                </span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <small class="text-muted">{{ job.created_at.strftime('%Y-%m-%d %H:%M') }}</small>
+                                        </td>
+                                        <td>
+                                            {% if job.status == 'completed' and job.download_path %}
+                                                <a href="{{ url_for('main.download', job_id=job.id) }}" class="btn btn-sm btn-outline-primary">
+                                                    <i data-feather="download" width="14" height="14" class="me-1"></i>
+                                                    Download
+                                                </a>
+                                            {% elif job.status == 'error' %}
+                                                <button class="btn btn-sm btn-outline-danger" data-bs-toggle="tooltip" title="{{ job.error_message }}">
+                                                    <i data-feather="info" width="14" height="14"></i>
+                                                </button>
+                                            {% else %}
+                                                <span class="text-muted">-</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i data-feather="inbox" width="64" height="64" class="text-muted mb-3"></i>
+                            <h5 class="text-muted">No processing jobs yet</h5>
+                            <p class="text-muted">Upload your first Excel file to get started with MIPS measure filtering.</p>
+                            <a href="{{ url_for('main.upload') }}" class="btn btn-primary">
+                                <i data-feather="upload" class="me-2"></i>
+                                Upload File
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

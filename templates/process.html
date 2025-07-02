@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+
+{% block title %}Select Measures - MIPS Measure Filter{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-10 col-lg-8">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title mb-0">
+                        <i data-feather="settings" class="me-2"></i>
+                        Select MIPS Measures
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <i data-feather="file" class="me-2"></i>
+                        <strong>Processing file:</strong> {{ filename }}
+                    </div>
+
+                    <form method="POST" id="measureForm">
+                        {{ form.hidden_tag() }}
+                        
+                        <div class="mb-4">
+                            <label class="form-label">{{ form.measures.label.text }}</label>
+                            <p class="text-muted mb-3">Select one or more MIPS Quality Measures to apply to your patient data. Each selected measure will create a separate sheet with eligible patients.</p>
+                            
+                            <div class="row">
+                                {% for value, label, checked in form.measures %}
+                                    <div class="col-md-6 mb-3">
+                                        <div class="card measure-card h-100" data-measure="{{ value }}">
+                                            <div class="card-body">
+                                                <div class="form-check">
+                                                    {{ value(class="form-check-input") }}
+                                                    <label class="form-check-label w-100" for="{{ value.id }}">
+                                                        <strong>{{ label.split(' - ')[0] }}</strong>
+                                                        {% if ' - ' in label %}
+                                                            <br><small class="text-muted">{{ label.split(' - ', 1)[1] }}</small>
+                                                        {% endif %}
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            
+                            {% if form.measures.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.measures.errors %}
+                                        <div>{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <a href="{{ url_for('main.upload') }}" class="btn btn-secondary">
+                                    <i data-feather="arrow-left" class="me-2"></i>
+                                    Upload Different File
+                                </a>
+                            </div>
+                            <div>
+                                <button type="button" class="btn btn-outline-primary me-2" id="selectAllBtn">
+                                    <i data-feather="check-square" class="me-2"></i>
+                                    Select All
+                                </button>
+                                {{ form.submit(class="btn btn-primary", id="processBtn") }}
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Processing Information -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i data-feather="info" class="me-2"></i>
+                        What happens next?
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4 text-center mb-3">
+                            <i data-feather="filter" width="32" height="32" class="text-primary mb-2"></i>
+                            <h6>Data Filtering</h6>
+                            <small class="text-muted">Apply measure-specific logic to identify eligible patients</small>
+                        </div>
+                        <div class="col-md-4 text-center mb-3">
+                            <i data-feather="file-text" width="32" height="32" class="text-success mb-2"></i>
+                            <h6>Report Generation</h6>
+                            <small class="text-muted">Create Excel workbook with separate sheets for each measure</small>
+                        </div>
+                        <div class="col-md-4 text-center mb-3">
+                            <i data-feather="download" width="32" height="32" class="text-info mb-2"></i>
+                            <h6>Download Results</h6>
+                            <small class="text-muted">Download your processed file with summary statistics</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Processing Modal -->
+<div class="modal fade" id="processingModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body text-center py-4">
+                <div class="spinner-border text-primary mb-3" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <h5>Processing Your File</h5>
+                <p class="text-muted mb-0">This may take a few moments depending on the file size and selected measures.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
