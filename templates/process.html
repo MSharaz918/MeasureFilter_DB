@@ -27,16 +27,16 @@
                             <p class="text-muted mb-3">Select one or more MIPS Quality Measures to apply to your patient data. Each selected measure will create a separate sheet with eligible patients.</p>
                             
                             <div class="row">
-                                {% for value, label, checked in form.measures %}
+                                {% for subfield in form.measures %}
                                     <div class="col-md-6 mb-3">
-                                        <div class="card measure-card h-100" data-measure="{{ value }}">
+                                        <div class="card measure-card h-100" data-measure="{{ subfield.data }}">
                                             <div class="card-body">
                                                 <div class="form-check">
-                                                    {{ value(class="form-check-input") }}
-                                                    <label class="form-check-label w-100" for="{{ value.id }}">
-                                                        <strong>{{ label.split(' - ')[0] }}</strong>
-                                                        {% if ' - ' in label %}
-                                                            <br><small class="text-muted">{{ label.split(' - ', 1)[1] }}</small>
+                                                    {{ subfield(class="form-check-input") }}
+                                                    <label class="form-check-label w-100" for="{{ subfield.id }}">
+                                                        <strong>{{ subfield.label.text.split(' - ')[0] }}</strong>
+                                                        {% if ' - ' in subfield.label.text %}
+                                                            <br><small class="text-muted">{{ subfield.label.text.split(' - ', 1)[1] }}</small>
                                                         {% endif %}
                                                     </label>
                                                 </div>
