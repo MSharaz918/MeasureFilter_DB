@@ -103,7 +103,45 @@ The MIPS Measure Filter is a Flask-based web application that automates the proc
 
 Preferred communication style: Simple, everyday language.
 
+## Local Setup for Hosting
+
+The application is designed to be fully portable and can run on any local server or hosting provider that supports Python/Flask applications:
+
+### Quick Setup Commands
+```bash
+# 1. Install dependencies
+pip install flask flask-sqlalchemy flask-login flask-wtf pandas openpyxl werkzeug wtforms email-validator bcrypt gunicorn
+
+# 2. Create directories
+mkdir uploads downloads
+
+# 3. Set environment variable
+export SESSION_SECRET="your-secret-key-here"
+
+# 4. Initialize database
+python -c "from app import app, db; app.app_context().push(); db.create_all()"
+
+# 5. Run application
+python run.py
+```
+
+### Alternative Setup
+Run the automated setup script:
+```bash
+python setup.py
+```
+
+### Hosting Requirements
+- Python 3.8+
+- 50MB disk space minimum
+- Write permissions for uploads/downloads folders
+- No external database required (uses SQLite)
+
 ## Changelog
 
-Changelog:
-- July 02, 2025. Initial setup
+- July 02, 2025: Initial Flask application structure created
+- July 02, 2025: Authentication system and file upload implemented
+- July 02, 2025: Six MIPS measures processing logic added
+- July 02, 2025: Template system and Bootstrap UI completed
+- July 02, 2025: JavaScript validation issues fixed, single measure selection working
+- July 02, 2025: Local setup documentation and automated setup script created
