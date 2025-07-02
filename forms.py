@@ -43,5 +43,5 @@ class MeasureSelectionForm(FlaskForm):
         ('279', 'Measure 279 - Depression Screening and Follow-Up Plan'),
         ('331', 'Measure 331 - Adult Sinusitis: Antibiotic Prescribed'),
         ('317', 'Measure 317 - Preventive Care and Screening: Screening for High Blood Pressure')
-    ], validators=[DataRequired(message='Please select at least one measure')])
+    ])
     submit = SubmitField('Process File')

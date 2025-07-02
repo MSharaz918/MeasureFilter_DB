@@ -137,7 +137,7 @@ def process():
         
         logging.info(f"Form submitted with measures: {selected_measures}")
         
-        if not selected_measures:
+        if not selected_measures or len(selected_measures) == 0:
             flash('Please select at least one measure.', 'warning')
             return render_template('process.html', form=form, filename=filename)
         
