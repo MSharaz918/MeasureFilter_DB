@@ -135,9 +135,18 @@ def process():
         filename = session['uploaded_file']
         selected_measures = form.measures.data
         
+        logging.info(f"Form submitted with measures: {selected_measures}")
+        
         if not selected_measures:
             flash('Please select at least one measure.', 'warning')
             return render_template('process.html', form=form, filename=filename)
+    else:
+        # Log form validation errors
+        if request.method == 'POST':
+            logging.error(f"Form validation failed: {form.errors}")
+            for field, errors in form.errors.items():
+                for error in errors:
+                    flash(f'{field}: {error}', 'error')
         
         try:
             # Create processing job record
