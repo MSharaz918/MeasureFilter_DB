@@ -1,0 +1,66 @@
+🩺 MIPS Measure Filter – Web App Development Requirements
+
+ 🧩 Project Overview:
+
+I currently assist doctors by processing their Excel sheets containing patient visit data. The goal is to create a production-ready website that automates this task:
+
+ ✅ Current Workflow (Manual):
+
+1. Doctors provide me Excel files with patient visit data.
+2. I format the sheet according to their specialty.
+3. Based on selected MIPS Quality Measures (like 47, 130, 226, 279, etc.), I apply predefined denominator logic using VBA scripts.
+4. For each measure, I extract matching patients and paste them into a new sheet named after the measure (e.g., "47", "130").
+5. A final workbook is created with:
+
+    Sheet 1: Original formatted data
+    Sheet 2+: Filtered data per measure
+
+---
+
+ 🖥️ Goal: Build a Web-Based App That Automates This
+
+ User Flow:
+
+1. Login Page – Basic login functionality (store user data in DB).
+2. Upload Page – User uploads a formatted Excel file.
+3. Measure Selection – User selects from available MIPS measures (e.g., 47, 130, 226, 279, 331, 317).
+4. Auto-Filtering – Backend applies the corresponding denominator logic using my pre-built Python scripts (e.g., 47.py, 130.py, etc.).
+5. Report Generation – App generates a downloadable Excel workbook:
+
+    Sheet 1: Original data
+    Sheet 2+: One sheet per measure with eligible patients only
+    Final Sheet: Summary of performance (e.g., count of eligible patients)
+
+ 🔗 Integration Notes:
+
+ I already have working Python scripts for each measure (e.g., 47.py, 130.py) with correct filtering logic.
+ These should be placed in a /measures/ folder and dynamically called by the backend based on user selection.
+ No database is needed for patient data – only login info should be stored.
+
+---
+
+ 🚀 Hosting & Deployment Requirements
+
+ The app must be:
+
+   Fully functional locally
+   Packaged and downloadable as a .zip
+   Deployable on Hostinger (shared hosting or VPS)
+ Backend can be Flask or Node.js, depending on compatibility.
+ Frontend can be basic HTML/CSS/JS or a simple React interface.
+ No external APIs required.
+
+---
+
+ 📦 Final Deliverables
+
+ A zipped folder of the production-ready app, including:
+
+   Login system
+   Upload & measure selection interface
+   Logic to call appropriate measure scripts
+   Report generation
+ A step-by-step guide to:
+
+   Run it locally
+   Deploy it on Hostinger (cPanel or VPS instructions)
