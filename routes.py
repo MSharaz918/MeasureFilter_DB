@@ -140,13 +140,6 @@ def process():
         if not selected_measures:
             flash('Please select at least one measure.', 'warning')
             return render_template('process.html', form=form, filename=filename)
-    else:
-        # Log form validation errors
-        if request.method == 'POST':
-            logging.error(f"Form validation failed: {form.errors}")
-            for field, errors in form.errors.items():
-                for error in errors:
-                    flash(f'{field}: {error}', 'error')
         
         try:
             # Create processing job record
@@ -188,6 +181,13 @@ def process():
                 job.error_message = str(e)
                 db.session.commit()
             flash('An error occurred during processing. Please try again.', 'error')
+    else:
+        # Log form validation errors
+        if request.method == 'POST':
+            logging.error(f"Form validation failed: {form.errors}")
+            for field, errors in form.errors.items():
+                for error in errors:
+                    flash(f'{field}: {error}', 'error')
     
     filename = session.get('uploaded_file', 'Unknown file')
     return render_template('process.html', form=form, filename=filename)
