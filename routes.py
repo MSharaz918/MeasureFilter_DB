@@ -164,8 +164,8 @@ def process():
                 # Clean up session
                 session.pop('uploaded_file', None)
                 
-                flash('File processed successfully!', 'success')
-                return redirect(url_for('main.download', job_id=job.id))
+                flash('File processed successfully! You can download it now.', 'success')
+                return redirect(url_for('main.dashboard'))
             else:
                 job.status = 'error'
                 job.error_message = result['error']
