@@ -1,4 +1,5 @@
 import os
+import json
 import logging
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
@@ -48,6 +49,14 @@ def create_app():
     
     # Proxy fix for deployment
     app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
+    
+    # Add custom Jinja2 filters
+    @app.template_filter('fromjson')
+    def fromjson_filter(s):
+        try:
+            return json.loads(s)
+        except (ValueError, TypeError):
+            return []
     
     with app.app_context():
         # Import models to ensure tables are created
